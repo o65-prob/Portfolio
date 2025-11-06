@@ -1,213 +1,316 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>o65 — Profile Card</title>
-  <style>
-    :root{
-      --bg:#060606;
-      --card:#0f0f10;
-      --muted:#9aa0a6;
-      --accent:#39a6ff;
-      --glass: rgba(255,255,255,0.02);
-      --radius:14px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>O65 — Portfolio</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #0b0f14;
+  --card: rgba(255,255,255,0.03);
+  --muted: #9aa0a6;
+  --accent: #2563eb;
+  --accent-2: #2598f7;
+  --glass: rgba(255,255,255,0.02);
+  --radius: 14px;
+  --text: #e6eef8;
+  --status: #4ef08a;
+  --surface: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+:root.light{
+  --bg: #f6f8fb;
+  --card: rgba(2,6,23,0.03);
+  --muted: #5a6a78;
+  --accent: #0b5fff;
+  --accent-2: #1e90ff;
+  --glass: rgba(0,0,0,0.03);
+  --text: #0b1720;
+  color-scheme: light;
+}
+html,body{height:100%; margin:0;}
+body{
+  min-height:100%;
+  background: radial-gradient(circle at 10% 10%, rgba(255,255,255,0.02), transparent 2%), var(--bg);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:48px;
+  overflow:hidden;
+  position:relative;
+  transition:background .25s ease,color .15s ease;
+  font-size:15px;
+}
 
-    html,body{height:100%;}
-    body{
-      margin:0;
-      min-height:100%;
-      background: radial-gradient( circle at 10% 10%, rgba(255,255,255,0.02), transparent 2%), var(--bg);
-      color:#e6e6e6;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:48px;
-      overflow:hidden;
-    }
+/* Background elements */
+canvas#stars{ position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+.blob{ position:fixed; left:0; top:0; width:420px; height:420px; pointer-events:none; border-radius:50%; transform:translate(-50%,-50%); filter:blur(44px) saturate(120%); mix-blend-mode:screen; z-index:0; transition:opacity .25s ease, transform .25s ease; background: radial-gradient(circle at 40% 30%, rgba(57,166,255,0.32), rgba(57,166,255,0.14) 35%, rgba(57,166,255,0.05) 60%, transparent 70%); opacity:0; }
+.grid-corner{ position:fixed; left:24px; top:18px; width:200px; height:200px; z-index:0; opacity:.35; pointer-events:none; background-image: linear-gradient(0deg, rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size:28px 28px, 28px 28px; border-radius:8px; }
 
-    .blob{
-      position:fixed;
-      left:0;top:0;
-      width:420px;height:420px;
-      pointer-events:none;
-      border-radius:50%;
-      transform:translate(-50%,-50%) scale(1);
-      filter:blur(44px) saturate(120%);
-      mix-blend-mode:screen;
-      z-index:0;
-      transition:opacity .25s ease;
-      background: radial-gradient(circle at 40% 30%, rgba(57,166,255,0.40), rgba(57,166,255,0.18) 35%, rgba(57,166,255,0.06) 60%, transparent 70%);
-    }
+/* Layout */
+.wrap{
+  width:min(1100px, 96%);
+  display:grid;
+  grid-template-columns: 1fr 360px;
+  gap:28px;
+  z-index:2;
+}
+.card{
+  background: var(--surface);
+  border-radius:var(--radius);
+  padding:22px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  border:1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(8px) saturate(1.05);
+  min-height:180px;
+  position:relative;
+  z-index:2;
+  transition:background .15s ease, color .15s ease;
+}
 
-    .grid-corner{
-      position:fixed; left:24px; top:18px; width:200px; height:200px; z-index:0; opacity:.45; pointer-events:none;
-      background-image: linear-gradient(0deg, rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size:28px 28px, 28px 28px;
-      border-radius:8px;
-    }
+/* Profile header */
+.profile-head{display:flex;gap:16px;align-items:center;margin-bottom:10px;}
+.pfp{
+  width:76px;height:76px;border-radius:12px;overflow:hidden;flex:0 0 76px;
+  border:1px solid rgba(255,255,255,0.04);
+  background:linear-gradient(180deg,#0b0b0b,#050607);
+  display:flex;align-items:center;justify-content:center;
+}
+.pfp img{width:100%;height:100%;object-fit:cover;display:block}
 
-    .wrap{
-      width:min(1100px, 96%);
-      display:grid;
-      grid-template-columns: 1fr 420px;
-      gap:28px;
-      z-index:2;
-    }
+h1{font-size:20px;margin:0 0 4px 0;font-weight:600;display:flex;align-items:center;gap:8px;}
+.handle{font-size:13px;color:var(--accent-2);font-weight:600}
+.user{font-size:13px;color:var(--muted);font-weight:600}
+.role{color:var(--muted);font-size:13px;margin-bottom:6px}
+.status{display:flex;align-items:center;gap:10px;margin-top:6px;font-size:13px}
+.status-dot{width:12px;height:12px;background:linear-gradient(180deg,#4ef08a,#06b33b);border-radius:50%;box-shadow:0 0 0 4px rgba(6,179,59,0.06)}
 
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:var(--radius);
-      padding:22px;
-      box-shadow: 0 2px 0 rgba(255,255,255,0.02) inset, 0 8px 30px rgba(0,0,0,0.7);
-      border:1px solid rgba(255,255,255,0.03);
-      backdrop-filter: blur(6px) saturate(1.05);
-      min-height:180px;
-    }
+/* Info boxes */
+.info-row{display:flex;gap:12px;margin-top:10px}
+.info-box{flex:1;background:var(--glass);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);text-align:center;}
+.info-box strong{display:block;font-size:18px}
+.info-box span{display:block;font-size:12px;color:var(--muted)}
 
-    .profile-head{display:flex;gap:16px;align-items:center;margin-bottom:10px;}
+/* Skills */
+.icons{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+.chip{ padding:8px 12px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04); color:var(--text); font-weight:600; font-size:13px; cursor:default; }
 
-    .pfp{
-      width:72px;height:72px;border-radius:14px;overflow:hidden;flex:0 0 72px;
-      border:2px solid rgba(255,255,255,0.03);
-      background:linear-gradient(180deg,#111,#0b0b0b);
-      display:flex;align-items:center;justify-content:center;
-    }
-    .pfp img{width:100%;height:100%;object-fit:cover;display:block}
+/* Projects */
+.projects h2{margin:0 0 12px 0;color:var(--text)}
+.project{padding:12px;border-radius:10px;border:1px dashed rgba(255,255,255,0.02);margin-bottom:10px;background:transparent}
+.project h3{margin:0;font-size:15px}
+.project p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
 
-    h1{font-size:22px;margin:0 0 4px 0;}
-    .subtitle{color:var(--muted);font-size:13px;margin-bottom:6px}
-    .status-dot{width:12px;height:12px;background:linear-gradient(180deg,#6bf, #2aa6ff);border-radius:50%;box-shadow:0 0 0 4px rgba(42,166,255,0.08)}
+/* Controls */
+#toggleMode{padding:8px 16px; border-radius:8px; border:none; cursor:pointer; background:var(--accent); color:#fff; margin-top:20px; font-weight:600; box-shadow:0 6px 18px rgba(37,99,235,0.12)}
+.field{margin-top:12px}
+.field input{width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--text);}
 
-    .info-row{display:flex;gap:12px;margin-top:10px}
-    .info-box{flex:1;background:var(--glass);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);text-align:center}
-    .info-box strong{display:block;font-size:18px}
-    .info-box span{display:block;font-size:12px;color:var(--muted)}
-
-    .icons{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
-    .chip{width:44px;height:36px;border-radius:8px;background:rgba(255,255,255,0.015);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.02)}
-
-    .projects h2{margin:0 0 12px 0;color:#fff}
-    .project{padding:12px;border-radius:10px;border:1px dashed rgba(255,255,255,0.02);margin-bottom:10px}
-    .project h3{margin:0;font-size:15px}
-    .project p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
-
-    .field{margin-top:12px}
-    .field input{width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#ddd}
-
-    @media (max-width:900px){
-      .wrap{grid-template-columns: 1fr;}
-      .card.right{order:2}
-    }
-
-    .section-title{display:flex;align-items:center;gap:10px}
-    .section-title .underline{height:3px;width:38px;background:linear-gradient(90deg,var(--accent),#6bd1ff);border-radius:5px}
-  </style>
+/* Responsive */
+@media (max-width:900px){
+  .wrap{grid-template-columns: 1fr;}
+  .card.right{order:2}
+}
+.section-title{display:flex;align-items:center;gap:10px}
+.section-title .underline{height:3px;width:38px;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:5px}
+a { color:var(--accent); text-decoration:none }
+.visually-hidden{ position:absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
+</style>
 </head>
 <body>
-  <div class="grid-corner" aria-hidden></div>
-  <div class="blob" id="blob" aria-hidden></div>
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="grid-corner" aria-hidden="true"></div>
+<div class="blob" id="blob" aria-hidden="true"></div>
 
-  <main class="wrap">
-    <section class="card left">
-      <div class="profile-head">
-        <div class="pfp"><img id="pfpImg" src="Captura de ecrã 2025-11-06 181225.png" alt="pfp"></div>
-        <div style="flex:1">
-          <h1>o65 <span style="color:var(--accent);font-weight:600;margin-left:8px;font-size:13px">•</span></h1>
-          <div class="subtitle">A developer who likes scripting & game design.</div>
-          <div style="display:flex;align-items:center;gap:10px;margin-top:6px"><div class="status-dot"></div><div style="font-size:13px;color:var(--muted)">Online</div></div>
-        </div>
+<main class="wrap" role="main">
+  <section class="card left" aria-labelledby="profile-heading">
+    <div class="profile-head">
+      <div class="pfp" aria-hidden="false"><img id="pfpImg" src="480896469_957365459850243_1276428334532731401_n.jpg" alt="Profile photo of O65"></div>
+      <div style="flex:1">
+        <h1 id="profile-heading">O65 <span class="user">@robinaron</span></h1>
+        <div class="role">Scripting · Game Dev · Frontend & UI Design</div>
+        <div class="status" aria-hidden="false"><div class="status-dot" aria-hidden="true"></div><div style="font-size:13px;color:var(--status)">Open to opportunities</div></div>
       </div>
+    </div>
 
-      <div class="info-row">
-        <div class="info-box">
-          <strong id="time">--:--</strong>
-          <span>It is currently</span>
-        </div>
-        <div class="info-box">
-          <strong>June 22</strong>
-          <span>Birthday</span>
-        </div>
-        <div class="info-box">
-          <strong>O65</strong>
-          <span>Discord / Social</span>
-        </div>
+    <div class="info-row" role="region" aria-label="Key information">
+      <div class="info-box" aria-live="polite">
+        <strong id="time">--:--</strong>
+        <span>Local time</span>
       </div>
-
-      <div class="icons" style="margin-top:14px">
-        <div class="chip">JS</div>
-        <div class="chip">TS</div>
-        <div class="chip">Lua</div>
-        <div class="chip">Py</div>
-        <div class="chip">RBX</div>
+      <div class="info-box">
+        <strong>June 22</strong>
+        <span>Birthday</span>
       </div>
-
-      <div class="field">
-        <label style="font-size:13px;color:var(--muted)">Discord ID Verification</label>
-        <input readonly value="1367543367277219840">
+      <div class="info-box">
+        <strong>O65</strong>
+        <span>Username</span>
       </div>
-    </section>
+    </div>
 
-    <aside class="card right projects">
-      <div class="section-title" style="margin-bottom:12px"><h2 style="margin:0">Projects</h2><div class="underline"></div></div>
+    <div class="icons" aria-hidden="false" role="list">
+      <div class="chip" role="listitem" title="JavaScript">JavaScript</div>
+      <div class="chip" role="listitem" title="TypeScript">TypeScript</div>
+      <div class="chip" role="listitem" title="Lua">Lua</div>
+      <div class="chip" role="listitem" title="Python">Python</div>
+      <div class="chip" role="listitem" title="Roblox Studio">Roblox</div>
+      <div class="chip" role="listitem" title="HTML/CSS">HTML/CSS</div>
+      <div class="chip" role="listitem" title="C++">C++</div>
+    </div>
 
-      <div class="project">
-        <h3>Cobalt · <small style="color:var(--muted);">Games</small></h3>
-        <p class="muted">Sicilian farming simulator, Cart ride around to save canny cat (helper).</p>
-      </div>
+    <div class="field">
+      <label for="discord-id" style="font-size:13px;color:var(--muted)">Discord ID</label>
+      <input id="discord-id" readonly value="702964162288156744" aria-readonly="true">
+    </div>
 
-      <div class="project">
-        <h3>UI</h3>
-        <p class="muted">I LOVE making ui its one of my favourites if not favourite.</p>
-      </div>
-    </aside>
-  </main>
+    <button id="toggleMode" aria-pressed="false" title="Toggle color theme">Toggle Theme</button>
+  </section>
 
-  <script>
-    function updateClock(){
-      const el = document.getElementById('time');
-      const d = new Date();
-      const opts = { hour: 'numeric', minute: '2-digit' };
-      el.textContent = d.toLocaleTimeString([], opts);
+
+  <aside class="card right projects" aria-labelledby="projects-heading">
+    <div class="section-title" style="margin-bottom:12px"><h2 id="projects-heading" style="margin:0">Projects</h2><div class="underline"></div></div>
+
+    <div class="project">
+      <h3>Recent Game Development · <small style="color:var(--muted);">Multiplayer & Systems</small></h3>
+      <p class="muted">Sicilian Farming Simulator — systems, UX, and client scripting.</p>
+    </div>
+
+    <div class="project">
+      <h3>UI / UX Work · <small style="color:var(--muted);">Design & Prototyping</small></h3>
+      <p class="muted">Designing responsive, accessible interfaces with a focus on clarity and performance.</p>
+    </div>
+
+    <div class="section-title" style="margin-top:20px"><h2 style="margin:0">Recent Activity</h2><div class="underline"></div></div>
+    <div class="project">
+      <h3>Updated Drag System for Sicilian Farming Simulator (SFS)</h3>
+      <p style="color:var(--muted);font-size:13px;">Nov 1, 2025</p>
+    </div>
+    <div class="project">
+      <h3>Added New features to SFS</h3>
+      <p style="color:var(--muted);font-size:13px;">Nov 5, 2025</p>
+    </div>
+  </aside>
+</main>
+
+<script>
+// ...existing code...
+// Clock (improved accessibility & 24h/12h respect)
+function updateClock(){
+  const el = document.getElementById('time');
+  const d = new Date();
+  const opts = { hour: '2-digit', minute: '2-digit' };
+  el.textContent = d.toLocaleTimeString([], opts);
+}
+updateClock();
+setInterval(updateClock, 1000 * 30);
+
+// Blob animation
+const blob = document.getElementById('blob');
+let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+let blobX = mouseX, blobY = mouseY;
+const ease = 0.12;
+window.addEventListener('pointermove', (e)=>{ mouseX = e.clientX; mouseY = e.clientY; blob.style.opacity = 1; });
+window.addEventListener('pointerleave', ()=> blob.style.opacity = 0);
+function raf(){ blobX += (mouseX - blobX) * ease; blobY += (mouseY - blobY) * ease; const cx = (blobX - window.innerWidth/2) * 0.18; const cy = (blobY - window.innerHeight/2) * 0.12; blob.style.transform = `translate(${blobX+cx}px, ${blobY+cy}px) translate(-50%,-50%)`; requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+
+// Drag-and-drop profile picture (keeps local blob URL)
+const pfp = document.getElementById('pfpImg');
+document.addEventListener('dragover', e=> e.preventDefault());
+document.addEventListener('drop', async (e)=>{
+  e.preventDefault();
+  const f = e.dataTransfer.files && e.dataTransfer.files[0];
+  if(!f) return;
+  const url = URL.createObjectURL(f);
+  pfp.src = url;
+});
+
+// Theme toggle using class on root
+const htmlRoot = document.documentElement;
+const toggle = document.getElementById('toggleMode');
+const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+if(prefersLight) htmlRoot.classList.add('light');
+
+toggle.addEventListener('click', ()=>{
+  const isLight = htmlRoot.classList.toggle('light');
+  toggle.setAttribute('aria-pressed', String(isLight));
+});
+
+// Starfield particles (optimized)
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let DPR = Math.max(1, window.devicePixelRatio || 1);
+function resizeCanvas(){
+  DPR = Math.max(1, window.devicePixelRatio || 1);
+  canvas.width = Math.floor(window.innerWidth * DPR);
+  canvas.height = Math.floor(window.innerHeight * DPR);
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  ctx.scale(DPR, DPR);
+}
+resizeCanvas();
+window.addEventListener('resize', ()=>{
+  resizeCanvas();
+});
+
+const numStars = 70;
+const stars = [];
+for(let i=0;i<numStars;i++){
+  stars.push({
+    x: Math.random()*window.innerWidth,
+    y: Math.random()*window.innerHeight,
+    vx: (Math.random()-0.5)*0.25,
+    vy: (Math.random()-0.5)*0.25,
+    radius: Math.random()*1.6 + 0.6
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width/DPR,canvas.height/DPR);
+  // draw stars
+  for(let i=0;i<stars.length;i++){
+    const s = stars[i];
+    s.x += s.vx;
+    s.y += s.vy;
+    if(s.x < -10) s.x = window.innerWidth + 10;
+    if(s.x > window.innerWidth + 10) s.x = -10;
+    if(s.y < -10) s.y = window.innerHeight + 10;
+    if(s.y > window.innerHeight + 10) s.y = -10;
+
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.radius, 0, Math.PI*2);
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.fill();
+  }
+
+  // connect nearby stars (limit per star for performance)
+  for(let i=0;i<stars.length;i++){
+    let connections = 0;
+    for(let j=i+1;j<stars.length && connections < 3;j++){
+      const dx = stars[i].x - stars[j].x;
+      const dy = stars[i].y - stars[j].y;
+      const dist = Math.hypot(dx, dy);
+      if(dist < 110){
+        connections++;
+        ctx.beginPath();
+        ctx.moveTo(stars[i].x, stars[i].y);
+        ctx.lineTo(stars[j].x, stars[j].y);
+        ctx.strokeStyle = `rgba(255,255,255,${0.55 - dist/200})`;
+        ctx.lineWidth = 0.3;
+        ctx.stroke();
+      }
     }
-    updateClock();
-    setInterval(updateClock, 1000*30);
+  }
 
-    const blob = document.getElementById('blob');
-    let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
-    let blobX = mouseX, blobY = mouseY;
-    const ease = 0.12;
-
-    window.addEventListener('pointermove', (e)=>{
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      blob.style.opacity = 1;
-    });
-    window.addEventListener('pointerleave', ()=> blob.style.opacity = 0);
-
-    function raf(){
-      blobX += (mouseX - blobX) * ease;
-      blobY += (mouseY - blobY) * ease;
-      const cx = (blobX - window.innerWidth/2) * 0.18;
-      const cy = (blobY - window.innerHeight/2) * 0.12;
-      blob.style.transform = `translate(${blobX + cx}px, ${blobY + cy}px) translate(-50%, -50%)`;
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    const pfp = document.getElementById('pfpImg');
-    document.addEventListener('dragover', e=> e.preventDefault());
-    document.addEventListener('drop', async (e)=>{
-      e.preventDefault();
-      const f = e.dataTransfer.files && e.dataTransfer.files[0];
-      if(!f) return;
-      const url = URL.createObjectURL(f);
-      pfp.src = url;
-    });
-
-    blob.style.opacity = 0;
-  </script>
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
 </body>
 </html>
