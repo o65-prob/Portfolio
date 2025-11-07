@@ -350,19 +350,6 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 30 * 1000);
 
-/* ---------- Profile picture drag/drop ---------- */
-(function initProfileDrop() {
-  const pfp = $('pfpImg');
-  if (!pfp) return;
-  document.addEventListener('dragover', (e) => e.preventDefault());
-  document.addEventListener('drop', (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-    if (!file) return;
-    pfp.src = URL.createObjectURL(file);
-  });
-})();
-
 /* ---------- Blob / subtle follow effect ---------- */
 (function initBlobFollow() {
   const blob = $('blob');
