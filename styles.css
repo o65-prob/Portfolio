@@ -121,6 +121,7 @@ canvas#stars {
   flex-shrink: 0;
   border: 1px solid rgba(255,255,255,0.03);
   background: linear-gradient(#0a0a0a, #040505);
+  box-shadow: 0 0 14px #4ef08a, 0 0 .1px rgba(78, 240, 138, 0.7);
   display: flex; align-items: center; justify-content: center;
 }
 
