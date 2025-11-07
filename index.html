@@ -48,10 +48,31 @@ body{
   font-size:15px;
 }
 
+/* Animated blurred background layer */
+.bg-animated{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  mix-blend-mode:screen;
+  opacity:0.9;
+  background:
+    radial-gradient(800px 400px at 10% 20%, rgba(37,99,235,0.12), transparent 18%),
+    radial-gradient(600px 300px at 85% 70%, rgba(57,166,255,0.08), transparent 18%),
+    radial-gradient(500px 280px at 60% 15%, rgba(8,145,178,0.06), transparent 18%);
+  filter: blur(48px) saturate(120%);
+  transform-origin:center;
+  animation: floatBG 14s linear infinite alternate;
+}
+@keyframes floatBG{
+  0%{ transform: translateY(0) rotate(0deg) scale(1); }
+  100%{ transform: translateY(-28px) rotate(6deg) scale(1.03); }
+}
+
 /* Background elements */
 canvas#stars{ position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; }
-.blob{ position:fixed; left:0; top:0; width:420px; height:420px; pointer-events:none; border-radius:50%; transform:translate(-50%,-50%); filter:blur(44px) saturate(120%); mix-blend-mode:screen; z-index:0; transition:opacity .25s ease, transform .25s ease; background: radial-gradient(circle at 40% 30%, rgba(57,166,255,0.32), rgba(57,166,255,0.14) 35%, rgba(57,166,255,0.05) 60%, transparent 70%); opacity:0; }
-.grid-corner{ position:fixed; left:24px; top:18px; width:200px; height:200px; z-index:0; opacity:.35; pointer-events:none; background-image: linear-gradient(0deg, rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size:28px 28px, 28px 28px; border-radius:8px; }
+.blob{ position:fixed; left:0; top:0; width:420px; height:420px; pointer-events:none; border-radius:50%; transform:translate(-50%,-50%); filter:blur(44px) saturate(120%); mix-blend-mode:screen; z-index:0; transition:opacity .55s ease, transform .25s ease; background: radial-gradient(circle at 40% 30%, rgba(57,166,255,0.32), rgba(57,166,255,0.14) 35%, rgba(57,166,255,0.05) 60%, transparent 97%); opacity:1; }
+.grid-corner{ position:fixed; left:24px; top:18px; width:200px; height:200px; z-index:0; opacity:.25; pointer-events:none; background-image: linear-gradient(0deg, rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size:28px 28px, 28px 28px; border-radius:8px; }
 
 /* Layout */
 .wrap{
@@ -99,7 +120,71 @@ h1{font-size:20px;margin:0 0 4px 0;font-weight:600;display:flex;align-items:cent
 
 /* Skills */
 .icons{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
-.chip{ padding:8px 12px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04); color:var(--text); font-weight:600; font-size:13px; cursor:default; }
+.chip{
+  position:relative;
+  padding:8px 12px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);
+  color:var(--text); font-weight:600; font-size:13px; cursor:default;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  will-change: transform;
+}
+.chip:hover, .chip:focus{
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(2,6,23,0.45);
+  border-color: rgba(255,255,255,0.08);
+  z-index:3;
+  outline: none;
+}
+.chip[tabindex="0"]:focus{ box-shadow:0 12px 30px rgba(2,6,23,0.5); outline: 2px solid rgba(37,99,235,0.18); outline-offset:2px }
+
+/* tooltip (uses data-tip) */
+.chip::after{
+  content: attr(data-tip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(6px);
+  background: rgba(6,10,16,0.92);
+  color: #fff;
+  padding:6px 8px;
+  border-radius:6px;
+  font-size:12px;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition: opacity .12s ease, transform .12s ease;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+}
+:root.light .chip::after{ background: rgba(8,12,20,0.95); color: var(--text); }
+.chip:hover::after, .chip:focus::after, .chip:focus-visible::after{
+  opacity:1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* new left-column additions */
+.about{margin-top:16px;color:var(--muted);font-size:13px;line-height:1.45}
+.metrics{display:flex;gap:10px;margin-top:14px}
+.metric{flex:1;background:var(--glass);padding:10px;border-radius:10px;text-align:center;border:1px solid rgba(255,255,255,0.02)}
+.metric strong{display:block;font-size:16px}
+.metric span{display:block;font-size:12px;color:var(--muted)}
+.skills-block{margin-top:14px}
+.skill-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px}
+.skill-label{width:110px;color:var(--muted);font-weight:600;font-size:13px}
+.progress{flex:1;height:10px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,0.02)}
+.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 6px 18px rgba(37,99,235,0.08);transition:width .6s cubic-bezier(.2,.9,.2,1)}
+.contact-list{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.btn{
+  padding:8px 12px;border-radius:10px;border:none;cursor:pointer;background:rgba(255,255,255,0.04);color:var(--text);font-weight:700;font-size:13px;border:1px solid rgba(255,255,255,0.03);
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.btn:hover{ transform:translateY(-4px); box-shadow:0 12px 30px rgba(2,6,23,0.35) }
+.btn.primary{ background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; border:none; box-shadow:0 8px 26px rgba(37,99,235,0.12) }
+.socials{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.socials a{ font-size:13px;color:var(--accent); text-decoration:none; padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.02) }
+.toast{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:28px; z-index:9999;
+  background: rgba(6,10,16,0.9); color:#fff; padding:10px 14px; border-radius:8px; font-size:13px; box-shadow:0 10px 30px rgba(2,6,23,0.5); opacity:0; transition:opacity .18s ease, transform .18s ease;
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0) }
 
 /* Projects */
 .projects h2{margin:0 0 12px 0;color:var(--text)}
@@ -116,14 +201,16 @@ h1{font-size:20px;margin:0 0 4px 0;font-weight:600;display:flex;align-items:cent
 @media (max-width:900px){
   .wrap{grid-template-columns: 1fr;}
   .card.right{order:2}
+  .skill-label{width:95px}
 }
 .section-title{display:flex;align-items:center;gap:10px}
-.section-title .underline{height:3px;width:38px;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:5px}
+.section-title .underline{height:3px;width:44px;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:5px}
 a { color:var(--accent); text-decoration:none }
 .visually-hidden{ position:absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
 </style>
 </head>
 <body>
+<div class="bg-animated" aria-hidden="true"></div>
 <canvas id="stars" aria-hidden="true"></canvas>
 <div class="grid-corner" aria-hidden="true"></div>
 <div class="blob" id="blob" aria-hidden="true"></div>
@@ -135,7 +222,7 @@ a { color:var(--accent); text-decoration:none }
       <div style="flex:1">
         <h1 id="profile-heading">O65 <span class="user">@robinaron</span></h1>
         <div class="role">Scripting · Game Dev · Frontend & UI Design</div>
-        <div class="status" aria-hidden="false"><div class="status-dot" aria-hidden="true"></div><div style="font-size:13px;color:var(--status)">Open to opportunities</div></div>
+        <div class="status" aria-hidden="false"><div class="status-dot" aria-hidden="true"></div><div style="font-size:13px;color:var(--status)">Open to Work</div></div>
       </div>
     </div>
 
@@ -155,13 +242,12 @@ a { color:var(--accent); text-decoration:none }
     </div>
 
     <div class="icons" aria-hidden="false" role="list">
-      <div class="chip" role="listitem" title="JavaScript">JavaScript</div>
-      <div class="chip" role="listitem" title="TypeScript">TypeScript</div>
-      <div class="chip" role="listitem" title="Lua">Lua</div>
-      <div class="chip" role="listitem" title="Python">Python</div>
-      <div class="chip" role="listitem" title="Roblox Studio">Roblox</div>
-      <div class="chip" role="listitem" title="HTML/CSS">HTML/CSS</div>
-      <div class="chip" role="listitem" title="C++">C++</div>
+      <div class="chip" role="listitem" title="JavaScript" data-tip="Experienced · 5 yrs" tabindex="0">JavaScript</div>
+      <div class="chip" role="listitem" title="Lua" data-tip="Experienced · Roblox scripting · 4 yrs" tabindex="0">Lua</div>
+      <div class="chip" role="listitem" title="Python" data-tip="Decent · Scripting & automation" tabindex="0">Python</div>
+      <div class="chip" role="listitem" title="HTML/CSS" data-tip="Advanced · Frontend · Responsive UI" tabindex="0">HTML/CSS</div>
+      <div class="chip" role="listitem" title="C++" data-tip="Advanced · Foundations · Systems programming" tabindex="0">C++</div>
+      <div class="chip" role="listitem" title="Learning" data-tip="I always want to keep learning — theres never enough to know." tabindex="0">Learning</div>
     </div>
 
     <div class="field">
@@ -169,7 +255,54 @@ a { color:var(--accent); text-decoration:none }
       <input id="discord-id" readonly value="702964162288156744" aria-readonly="true">
     </div>
 
-    <button id="toggleMode" aria-pressed="false" title="Toggle color theme">Toggle Theme</button>
+    <!-- New content to fill bottom of left column -->
+    <div class="about" aria-label="About">
+      <strong style="display:block;margin-bottom:6px;color:var(--text)">About</strong>
+      <p>I'm a game- and frontend-focused developer specializing in client-side systems, UX, and performant UI. I deliver clear, maintainable code and polished player-facing experiences.</p>
+    </div>
+
+    <div class="metrics" aria-hidden="false">
+      <div class="metric" title="Completed projects">
+        <strong>12</strong>
+        <span>Completed projects</span>
+      </div>
+      <div class="metric" title="Active contributors">
+        <strong>4</strong>
+        <span>Team contributors</span>
+      </div>
+      <div class="metric" title="Hours this month">
+        <strong>100+</strong>
+        <span>Hours this month</span>
+      </div>
+    </div>
+
+    <div class="skills-block" aria-label="Skill levels">
+      <strong style="display:block;margin:10px 0 8px 0;color:var(--text)">Skill levels</strong>
+      <div class="skill-row">
+        <div class="skill-label">JavaScript</div>
+        <div class="progress" aria-hidden="true"><div class="progress-fill" style="width:85%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-label">TypeScript</div>
+        <div class="progress"><div class="progress-fill" style="width:78%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-label">Lua</div>
+        <div class="progress"><div class="progress-fill" style="width:90%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-label">Python</div>
+        <div class="progress"><div class="progress-fill" style="width:64%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-label">HTML</div>
+        <div class="progress"><div class="progress-fill" style="width:70%"></div></div>
+      </div>
+    </div>
+
+    <div class="contact-list" aria-label="Contact actions">
+    </div>
+
   </section>
 
 
@@ -186,7 +319,7 @@ a { color:var(--accent); text-decoration:none }
       <p class="muted">Designing responsive, accessible interfaces with a focus on clarity and performance.</p>
     </div>
 
-    <div class="section-title" style="margin-top:20px"><h2 style="margin:0">Recent Activity</h2><div class="underline"></div></div>
+    <div class="section-title" style="margin-top:20px"><h2 style="margin:0">Activity</h2><div class="underline"></div></div>
     <div class="project">
       <h3>Updated Drag System for Sicilian Farming Simulator (SFS)</h3>
       <p style="color:var(--muted);font-size:13px;">Nov 1, 2025</p>
@@ -198,119 +331,257 @@ a { color:var(--accent); text-decoration:none }
   </aside>
 </main>
 
+<!-- toast for small feedback messages -->
+<div id="toast" class="toast" role="status" aria-live="polite" style="transform:translateX(-50%) translateY(8px);"></div>
+
 <script>
-// ...existing code...
-// Clock (improved accessibility & 24h/12h respect)
-function updateClock(){
-  const el = document.getElementById('time');
-  const d = new Date();
+/*
+  Humanized / documented script
+  - clearer variable names
+  - small helper functions
+  - separated logic: clock, blob, drag/drop, starfield
+  - gentle smoothing for glow fade in/out so it looks natural
+*/
+
+/* ---------- Utilities ---------- */
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+/* ---------- Clock (local, respects user locale) ---------- */
+function updateClock() {
+  const el = $('time');
+  if (!el) return;
+  const now = new Date();
   const opts = { hour: '2-digit', minute: '2-digit' };
-  el.textContent = d.toLocaleTimeString([], opts);
+  el.textContent = now.toLocaleTimeString([], opts);
 }
 updateClock();
-setInterval(updateClock, 1000 * 30);
+setInterval(updateClock, 30 * 1000);
 
-// Blob animation
-const blob = document.getElementById('blob');
-let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
-let blobX = mouseX, blobY = mouseY;
-const ease = 0.12;
-window.addEventListener('pointermove', (e)=>{ mouseX = e.clientX; mouseY = e.clientY; blob.style.opacity = 1; });
-window.addEventListener('pointerleave', ()=> blob.style.opacity = 0);
-function raf(){ blobX += (mouseX - blobX) * ease; blobY += (mouseY - blobY) * ease; const cx = (blobX - window.innerWidth/2) * 0.18; const cy = (blobY - window.innerHeight/2) * 0.12; blob.style.transform = `translate(${blobX+cx}px, ${blobY+cy}px) translate(-50%,-50%)`; requestAnimationFrame(raf); }
-requestAnimationFrame(raf);
-
-// Drag-and-drop profile picture (keeps local blob URL)
-const pfp = document.getElementById('pfpImg');
-document.addEventListener('dragover', e=> e.preventDefault());
-document.addEventListener('drop', async (e)=>{
-  e.preventDefault();
-  const f = e.dataTransfer.files && e.dataTransfer.files[0];
-  if(!f) return;
-  const url = URL.createObjectURL(f);
-  pfp.src = url;
-});
-
-// Theme toggle using class on root
-const htmlRoot = document.documentElement;
-const toggle = document.getElementById('toggleMode');
-const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-if(prefersLight) htmlRoot.classList.add('light');
-
-toggle.addEventListener('click', ()=>{
-  const isLight = htmlRoot.classList.toggle('light');
-  toggle.setAttribute('aria-pressed', String(isLight));
-});
-
-// Starfield particles (optimized)
-const canvas = document.getElementById('stars');
-const ctx = canvas.getContext('2d');
-let DPR = Math.max(1, window.devicePixelRatio || 1);
-function resizeCanvas(){
-  DPR = Math.max(1, window.devicePixelRatio || 1);
-  canvas.width = Math.floor(window.innerWidth * DPR);
-  canvas.height = Math.floor(window.innerHeight * DPR);
-  canvas.style.width = window.innerWidth + 'px';
-  canvas.style.height = window.innerHeight + 'px';
-  ctx.scale(DPR, DPR);
-}
-resizeCanvas();
-window.addEventListener('resize', ()=>{
-  resizeCanvas();
-});
-
-const numStars = 70;
-const stars = [];
-for(let i=0;i<numStars;i++){
-  stars.push({
-    x: Math.random()*window.innerWidth,
-    y: Math.random()*window.innerHeight,
-    vx: (Math.random()-0.5)*0.25,
-    vy: (Math.random()-0.5)*0.25,
-    radius: Math.random()*1.6 + 0.6
+/* ---------- Profile picture drag/drop ---------- */
+(function initProfileDrop() {
+  const pfp = $('pfpImg');
+  if (!pfp) return;
+  document.addEventListener('dragover', (e) => e.preventDefault());
+  document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (!file) return;
+    pfp.src = URL.createObjectURL(file);
   });
+})();
+
+/* ---------- Blob / subtle follow effect ---------- */
+(function initBlobFollow() {
+  const blob = $('blob');
+  if (!blob) return;
+
+  // position smoothing
+  let targetX = window.innerWidth / 2;
+  let targetY = window.innerHeight / 2;
+  let currentX = targetX;
+  let currentY = targetY;
+  const EASE = 0.12;
+
+  window.addEventListener('pointermove', (e) => {
+    targetX = e.clientX;
+    targetY = e.clientY;
+    blob.style.opacity = '1';
+  });
+  window.addEventListener('pointerleave', () => { blob.style.opacity = '0'; });
+
+  function tick() {
+    currentX += (targetX - currentX) * EASE;
+    currentY += (targetY - currentY) * EASE;
+    // small parallax offset to make movement feel organic
+    const offsetX = (currentX - window.innerWidth / 2) * 0.18;
+    const offsetY = (currentY - window.innerHeight / 2) * 0.12;
+    blob.style.transform = `translate(${currentX + offsetX}px, ${currentY + offsetY}px) translate(-50%,-50%)`;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+/* ---------- Theme toggle (keeps existing behavior) ---------- */
+(function initThemeToggle() {
+  const htmlRoot = document.documentElement;
+  const toggle = $('toggleMode');
+  if (!toggle) return;
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  if (prefersLight) htmlRoot.classList.add('light');
+  toggle.addEventListener('click', () => {
+    const isLight = htmlRoot.classList.toggle('light');
+    toggle.setAttribute('aria-pressed', String(isLight));
+  });
+})();
+
+/* ---------- Toast helper (for small feedback) ---------- */
+const toastEl = $('toast');
+function showToast(message, ms = 1400) {
+  if (!toastEl) return;
+  toastEl.textContent = message;
+  toastEl.classList.add('show');
+  setTimeout(() => toastEl.classList.remove('show'), ms);
 }
 
-function draw(){
-  ctx.clearRect(0,0,canvas.width/DPR,canvas.height/DPR);
-  // draw stars
-  for(let i=0;i<stars.length;i++){
-    const s = stars[i];
-    s.x += s.vx;
-    s.y += s.vy;
-    if(s.x < -10) s.x = window.innerWidth + 10;
-    if(s.x > window.innerWidth + 10) s.x = -10;
-    if(s.y < -10) s.y = window.innerHeight + 10;
-    if(s.y > window.innerHeight + 10) s.y = -10;
+/* ---------- Starfield with faint constellation glows ---------- */
+(function initStarfield() {
+  const canvas = $('stars');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
 
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.radius, 0, Math.PI*2);
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.fill();
+  // Configurable constants
+  const NUM_STARS = 70;
+  const STAR_SPEED = 0.25;        // max velocity magnitude
+  const PARALLAX_FACTOR = 0.002;  // pointer parallax sensitivity
+  const CLUSTER_RADIUS = 110;     // distance to consider neighbors
+  const WEIGHT_SMOOTH = 0.08;     // smoothing for per-star weight (fade)
+  const MIN_WEIGHT_VISIBLE = 0.02;
+
+  // sizing / DPR handling
+  let DPR = Math.max(1, window.devicePixelRatio || 1);
+  function resizeCanvas() {
+    DPR = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.floor(window.innerWidth * DPR);
+    canvas.height = Math.floor(window.innerHeight * DPR);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    // Use setTransform instead of scale to avoid accumulating scale calls
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  // Parallax values updated on pointer move
+  let parallaxX = 0, parallaxY = 0;
+  window.addEventListener('pointermove', (e) => {
+    parallaxX = (e.clientX - window.innerWidth / 2) * PARALLAX_FACTOR;
+    parallaxY = (e.clientY - window.innerHeight / 2) * PARALLAX_FACTOR;
+  });
+
+  // Generate stars
+  const stars = [];
+  for (let i = 0; i < NUM_STARS; i++) {
+    stars.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      ox: 0, oy: 0,                 // parallax offsets
+      vx: (Math.random() - 0.5) * STAR_SPEED,
+      vy: (Math.random() - 0.5) * STAR_SPEED,
+      radius: Math.random() * 1.6 + 0.6,
+      alpha: Math.random() * 0.7 + 0.3,
+      w: 0                          // per-star dynamic "weight" for glow
+    });
   }
 
-  // connect nearby stars (limit per star for performance)
-  for(let i=0;i<stars.length;i++){
-    let connections = 0;
-    for(let j=i+1;j<stars.length && connections < 3;j++){
-      const dx = stars[i].x - stars[j].x;
-      const dy = stars[i].y - stars[j].y;
-      const dist = Math.hypot(dx, dy);
-      if(dist < 110){
-        connections++;
-        ctx.beginPath();
-        ctx.moveTo(stars[i].x, stars[i].y);
-        ctx.lineTo(stars[j].x, stars[j].y);
-        ctx.strokeStyle = `rgba(255,255,255,${0.55 - dist/200})`;
-        ctx.lineWidth = 0.3;
-        ctx.stroke();
+  // Update positions, handle wrapping, and compute neighbor count -> target weight
+  function updateStars() {
+    for (let i = 0; i < stars.length; i++) {
+      const s = stars[i];
+
+      // Movement + wrap-around
+      s.x += s.vx;
+      s.y += s.vy;
+      if (s.x < -10) s.x = window.innerWidth + 10;
+      if (s.x > window.innerWidth + 10) s.x = -10;
+      if (s.y < -10) s.y = window.innerHeight + 10;
+      if (s.y > window.innerHeight + 10) s.y = -10;
+
+      // Smooth parallax offsets (so they don't snap)
+      s.ox += (parallaxX * (s.radius + 0.2) - s.ox) * 0.06;
+      s.oy += (parallaxY * (s.radius + 0.2) - s.oy) * 0.06;
+
+      // Count neighbors within CLUSTER_RADIUS (cheap O(n^2) is fine for ~70)
+      let neighborCount = 0;
+      const px = s.x + s.ox * 30;
+      const py = s.y + s.oy * 30;
+      for (let j = 0; j < stars.length; j++) {
+        if (i === j) continue;
+        const other = stars[j];
+        const dx = px - (other.x + other.ox * 30);
+        const dy = py - (other.y + other.oy * 30);
+        if (Math.hypot(dx, dy) < CLUSTER_RADIUS) neighborCount++;
+      }
+
+      // Map neighborCount to a 0..1 target weight (keeps glow subtle)
+      const targetWeight = clamp(neighborCount / 6, 0, 1);
+      s.w += (targetWeight - s.w) * WEIGHT_SMOOTH; // smooth transition = fade
+    }
+  }
+
+  // Draw per-star faint glows (overlapping creates constellation-like patches)
+  function drawGlows() {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter'; // additive blending for soft glows
+    for (let i = 0; i < stars.length; i++) {
+      const s = stars[i];
+      const weight = s.w || 0;
+      if (weight < MIN_WEIGHT_VISIBLE) continue; // skip ultra-faint
+      const x = s.x + s.ox * 30;
+      const y = s.y + s.oy * 30;
+      const glowRadius = 36 + weight * 120; // scale glow by cluster density
+      const g = ctx.createRadialGradient(x, y, 0, x, y, glowRadius);
+      // Very faint colors so glows remain background ambience
+      g.addColorStop(0, `rgba(57,166,255,${0.06 * weight})`);
+      g.addColorStop(0.45, `rgba(57,166,255,${0.02 * weight})`);
+      g.addColorStop(1, 'rgba(57,166,255,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // Draw the tiny star points
+  function drawStars() {
+    for (let i = 0; i < stars.length; i++) {
+      const s = stars[i];
+      ctx.beginPath();
+      ctx.arc(s.x + s.ox * 30, s.y + s.oy * 30, s.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  // Draw short connection lines between nearby stars (limits per star)
+  function drawConnections() {
+    for (let i = 0; i < stars.length; i++) {
+      let connections = 0;
+      for (let j = i + 1; j < stars.length && connections < 3; j++) {
+        const aX = stars[i].x + stars[i].ox * 30;
+        const aY = stars[i].y + stars[i].oy * 30;
+        const bX = stars[j].x + stars[j].ox * 30;
+        const bY = stars[j].y + stars[j].oy * 30;
+        const dist = Math.hypot(aX - bX, aY - bY);
+        if (dist < CLUSTER_RADIUS) {
+          connections++;
+          ctx.beginPath();
+          ctx.moveTo(aX, aY);
+          ctx.lineTo(bX, bY);
+          ctx.strokeStyle = `rgba(255,255,255,${0.55 - dist / 200})`;
+          ctx.lineWidth = 0.3;
+          ctx.stroke();
+        }
       }
     }
   }
 
-  requestAnimationFrame(draw);
-}
-requestAnimationFrame(draw);
+  // Single animation frame: update then render
+  function frame() {
+    // clear drawing surface (accounting for DPR via setTransform earlier)
+    ctx.clearRect(0, 0, canvas.width / DPR, canvas.height / DPR);
+
+    updateStars();
+    drawGlows();       // draw faint, overlapping glows first (lighter blending)
+    drawStars();       // then draw star points above glows
+    drawConnections(); // then subtle lines
+
+    requestAnimationFrame(frame);
+  }
+
+  requestAnimationFrame(frame);
+})(); /* end starfield */
 </script>
 </body>
 </html>
